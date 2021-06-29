@@ -1,49 +1,52 @@
 import Cake from './dataObjects/Cake';
+import {backendLink} from '../consts';
 
 class CakesDataAccess {
     static async getCakesList(): Promise<Array<Cake>> {
-        let cakesRespose:any = await fetch('api/cakes', {
+        let cakesRespose: any = await fetch(`${backendLink}/api/cakes`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
-              },
+            },
         });
-        let cakesResposeJson:Array<Cake> = await cakesRespose.json()
+        let cakesResposeJson: Array<Cake> = await cakesRespose.json()
 
-        let cakes:Array<Cake> = [];
+        let cakes: Array<Cake> = [];
         return cakesResposeJson;
     }
 
     static async addNewCake(newCake: Cake, file: File): Promise<Cake | null> {
         let cakesRespose: any = null;
-            console.log("add new cake")
-            console.log(newCake)
-            cakesRespose = await fetch('api/cakes', {
+        cakesRespose = await fetch(`${backendLink}/api/cakes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newCake)
+        });
+            let cakeResult: Cake = await cakesRespose.json()
+            const fileNameparts = file.name.split('.');
+            const fileExtension = fileNameparts[fileNameparts.length - 1];
+            var formData = new FormData()
+            formData.append('file', file as Blob)
+            formData.append('name', `${newCake.id}.${fileExtension}`)
+            await fetch(`${backendLink}/api/images`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Access-Control-Allow-Origin': 'http://localhost:3000',
+                    'Access-Control-Request-Headers': 'Content-Length,Accept,Authorization,Content-Type'
                 },
-                body: JSON.stringify(newCake)
-            });
-            console.log("cakesRespose")
-            console.log(cakesRespose)
-        if (cakesRespose) {
-            let cakeResult: Cake = await cakesRespose.json()
-            console.log("cakeResult")
-            console.log(cakeResult)
-                console.log("new selectedFile")
-                console.log(file)
-                const fileNameparts = file.name.split('.');
-                const fileExtension = fileNameparts[fileNameparts.length-1];
-                var formData = new FormData()
-                formData.append('file', file as Blob)
-                formData.append('name', `${newCake.id}.${fileExtension}`)
-                await fetch(`/api/images`, {
-                    method: 'POST',
-                    body: formData
-                })
+                body: formData
+            })
             return cakeResult;
-        } else return null;
+    }
+
+    static async deleteCake(id: string): Promise<Cake | null> {
+        let deleteRespose: any = null;
+        deleteRespose = await fetch(`${backendLink}/api/cakes/${id}`, {
+            method: 'DELETE'
+        });
+        return deleteRespose;
     }
 }
 

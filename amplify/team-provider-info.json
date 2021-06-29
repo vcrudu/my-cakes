@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-mycakes-dev-183230-authRole",
+      "UnauthRoleArn": "arn:aws:iam::878946482014:role/amplify-mycakes-dev-183230-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::878946482014:role/amplify-mycakes-dev-183230-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-mycakes-dev-183230-deployment",
+      "UnauthRoleName": "amplify-mycakes-dev-183230-unauthRole",
+      "StackName": "amplify-mycakes-dev-183230",
+      "StackId": "arn:aws:cloudformation:eu-west-1:878946482014:stack/amplify-mycakes-dev-183230/fd8e17a0-d8ff-11eb-ad78-0a745e32151f",
+      "AmplifyAppId": "d114ke6mfe6ste"
+    }
+  }
+}

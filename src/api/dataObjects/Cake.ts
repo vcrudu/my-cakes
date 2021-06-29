@@ -5,7 +5,7 @@ interface Cake {
   author?: string;
   difficulty?: string;
   effort?: string;
-  dateTime?: Date;
+  dateTime?: Number;
 };
 
 export default Cake;

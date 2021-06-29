@@ -4,21 +4,26 @@ import withReduxStore from "../utils/withReduxStore";
 import Cake from '../api/dataObjects/Cake';
 import CakesDataAccess from "../api/CakesDataAccess";
 import { v4 as uuidv4 } from 'uuid';
+import { useHistory } from "react-router-dom";
 
 function NewCake(props: any) {
     const [validated, setValidated] = useState(false);
-    const [readyToSave, setReadyToSave] = useState(false);
     const [newCake, setNewCake] = useState<Cake>({"difficulty": "Very easy"});
     const [selectedFile, setSelectedFile] = useState<File | undefined>();
     const [error, setError] = useState<string>();
     const [showError, setShowError] = useState(false);
+    let history = useHistory();
+
+    const navigateToList = ()=>{
+      history.push(`/`);
+    }
 
     const handleCloseError = () => setShowError(false);
     const handleShowError = () => setShowError(true);
 
     const postAll = async (newCake: Cake, selectedFile: File)=>{
         try {
-            const cake = await CakesDataAccess.addNewCake(newCake, selectedFile);
+            await CakesDataAccess.addNewCake(newCake, selectedFile);
         } catch (err) {
             console.log(err)
         }
@@ -29,18 +34,19 @@ function NewCake(props: any) {
 
     }, []);
 
-    const handleSubmit = (event:any) => {
+    const handleSubmit = async (event:any) => {
+        event.preventDefault();
         const form = event.currentTarget;
         if (form.checkValidity() === false || !selectedFile) {
             event.preventDefault();
             event.stopPropagation();
-            setReadyToSave(false);
             if(!selectedFile) handleShowError()
         } else {
-            setReadyToSave(true);
             if (selectedFile) {
                 newCake.id = uuidv4();
-                postAll(newCake, selectedFile);
+                newCake.dateTime = new Date().valueOf();
+                await postAll(newCake, selectedFile);
+                navigateToList();
             } else{
                 handleShowError()
                 return;
@@ -142,17 +148,17 @@ function NewCake(props: any) {
         </Row>
 
         <Modal show={showError} onHide={handleCloseError}>
-        <Modal.Header>
-            <Modal.Title>Warning</Modal.Title>
-        </Modal.Header>
+            <Modal.Header>
+                <Modal.Title>Warning</Modal.Title>
+            </Modal.Header>
 
-        <Modal.Body>
-            <p>Image should be a png of jpeg file.</p>
-        </Modal.Body>
+            <Modal.Body>
+                <p>Image should be a png of jpeg file.</p>
+            </Modal.Body>
 
-        <Modal.Footer>
-            <Button variant="secondary"  onClick={handleCloseError}>Close</Button>
-        </Modal.Footer>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseError}>Close</Button>
+            </Modal.Footer>
         </Modal>
     </Container>
 }

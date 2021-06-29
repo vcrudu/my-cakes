@@ -2,11 +2,13 @@ import { connect } from 'react-redux';
 import {
   updateCakesList,
   updateCurrentCake,
-  updateCurrentScreen
+  updateCurrentScreen,
+  deleteCake
 } from '../store/actions';
+import Cake from '../api/dataObjects/Cake'
 
-export default function withReduxStore(WrappedComponent) {
-  const mapStateToProps = (state) => {
+export default function withReduxStore(WrappedComponent: any) {
+  const mapStateToProps = (state: any) => {
     return {
       cakesList: state.cakesList,
       currentCake: state.currentCake,
@@ -14,14 +16,16 @@ export default function withReduxStore(WrappedComponent) {
     };
   };
 
-  const mapDispatchToProps = (dispatch) => {
+  const mapDispatchToProps = (dispatch: any) => {
     return {
-      updateCakesList: (cakesList) =>
+      updateCakesList: (cakesList: Array<Cake>) =>
         dispatch(updateCakesList(cakesList)),
-      updateCurrentCake: (currentCake) =>
+      updateCurrentCake: (currentCake: Cake) =>
         dispatch(updateCurrentCake(currentCake)),
-      updateCurrentScreen: (currentScreen) =>
+      updateCurrentScreen: (currentScreen: string) =>
         dispatch(updateCurrentScreen(currentScreen)),
+      deleteCake: (id: string) =>
+        dispatch(deleteCake(id)),
     };
   };
 
